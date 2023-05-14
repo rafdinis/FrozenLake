@@ -145,7 +145,7 @@ def Double_point(population, crossover_rate=0.5):
             parent2_policy = population[parent2].policy_matrix.copy()
 
             # select two random points between 0 and 15
-            crossover_points = sorted(random.sample(range(0, 16), 2))  # sort to ensure correct ordering
+            crossover_points = sorted(random.sample(range(0, 16), 2))
 
             # flatten the parents
             flat_p1p = parent1_policy.flatten()
