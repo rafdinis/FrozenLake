@@ -55,74 +55,116 @@ def Single_point(population, crossover_rate=0.5):
             crossover_population.append(population[parent2])
     return crossover_population
 
+def Alternated_mosaic(population, crossover_rate=0.5):
+    crossover_population = []
 
-def Double_point(n):
+    parent_indexadd = []
+    parent_index = list(range(len(population)))
+    parent2_index = parent_index.copy()
 
-    #Get info about parent 1
+    for parent1 in parent_index:
+        if parent1 in parent2_index:
+            parent2_index.remove(parent1)
+        if parent1 in parent_indexadd:
+            continue
+        elif np.random.random() < crossover_rate or len(parent2_index) <= 0:
+            # add directly to the population
+            crossover_population.append(population[parent1])
+            # remove from the indexes this parent
+        else:
+            parent2 = random.choice(parent2_index)
 
-    #Get info about parent 2
+            while parent2 == parent1:
+                parent2 = random.choice(parent2_index)
+            # remove the parents from the indexes
+            parent_indexadd.append(parent2)
+            parent2_index.remove(parent2)
 
-    #Select two random different numbers
+            # get the matrix policy of the first parent
+            parent1_policy = population[parent1].policy_matrix.copy()
+            # get the matrix policy of the seconds parent
+            parent2_policy = population[parent2].policy_matrix.copy()
 
-    #v_low = is the lower value
-    #v_high = is the higher value
+            # select one random point between 0 and 15 (the indexes of the policy matrix)
+            crossover_point = random.randrange(0, 15)
 
-    #Shuffle the parents to choose
+            # flatten the parents
+            flat_p1p = parent1_policy.flatten()
+            flat_p2p = parent2_policy.flatten()
 
-    #Create a
+            # Initialize offspring
+            flat_offspring1 = np.empty_like(flat_p1p)
+            flat_offspring2 = np.empty_like(flat_p2p)
 
-    #return new policy matrix
-    return print(n)
+            # Iterate over each element of the policy
+            for i in range(len(flat_p1p)):
+                if random.random() < crossover_rate:
+                    flat_offspring1[i] = flat_p1p[i]
+                    flat_offspring2[i] = flat_p2p[i]
+                else:
+                    flat_offspring1[i] = flat_p2p[i]
+                    flat_offspring2[i] = flat_p1p[i]
 
-def Alternated_mosaic(n):
+            offspring1_policy = flat_offspring1.reshape(parent1_policy.shape)
+            offspring2_policy = flat_offspring2.reshape(parent1_policy.shape)
 
-    #Get info about parent 1
+            population[parent1].policy_matrix = offspring1_policy
+            crossover_population.append(population[parent1])
+            population[parent2].policy_matrix = offspring2_policy
+            crossover_population.append(population[parent2])
+    return crossover_population
 
-    #Get info about parent 2
+def Double_point(population, crossover_rate=0.5):
+    crossover_population = []
 
-    #Select a random parent to be the even values and another for odd numbers
+    parent_indexadd = []
+    parent_index = list(range(len(population)))
+    parent2_index = parent_index.copy()
 
+    for parent1 in parent_index:
+        if parent1 in parent2_index:
+            parent2_index.remove(parent1)
+        if parent1 in parent_indexadd:
+            continue
+        elif np.random.random() < crossover_rate or len(parent2_index) <= 0:
+            # add directly to the population
+            crossover_population.append(population[parent1])
+            # remove from the indexes this parent
+        else:
+            parent2 = random.choice(parent2_index)
 
-    #return new policy matrix
-    return print(n)
+            while parent2 == parent1:
+                parent2 = random.choice(parent2_index)
+            # remove the parents from the indexes
+            parent_indexadd.append(parent2)
+            parent2_index.remove(parent2)
 
+            # get the matrix policy of the first parent
+            parent1_policy = population[parent1].policy_matrix.copy()
+            # get the matrix policy of the seconds parent
+            parent2_policy = population[parent2].policy_matrix.copy()
 
+            # select two random points between 0 and 15
+            crossover_points = sorted(random.sample(range(0, 16), 2))  # sort to ensure correct ordering
 
+            # flatten the parents
+            flat_p1p = parent1_policy.flatten()
+            flat_p2p = parent2_policy.flatten()
 
+            # create offsprings with two crossover points
+            flat_offspring1 = np.concatenate((flat_p1p[:crossover_points[0]],
+                                              flat_p2p[crossover_points[0]:crossover_points[1]],
+                                              flat_p1p[crossover_points[1]:]))
 
-def manhattan_distance(state):
-    """
-    Calculate the Manhattan distance
-    """
-    # Calculate the row and column indices of the current state
-    row, col = state[0] // 4, state[0] % 4
+            flat_offspring2 = np.concatenate((flat_p2p[:crossover_points[0]],
+                                              flat_p1p[crossover_points[0]:crossover_points[1]],
+                                              flat_p2p[crossover_points[1]:]))
 
-    # Compute the Manhattan distance
-    distance = abs(row - 3) + abs(col - 3)
+            offspring1_policy = flat_offspring1.reshape(parent1_policy.shape)
+            offspring2_policy = flat_offspring2.reshape(parent1_policy.shape)
 
-    return distance
-
-
-
-def mutate_population(population):
-    crossed_population = []
-
-    for agent in population:
-        # Copy the policy matrix
-        mutated_policy = agent.policy_matrix.copy()
-
-        # Random row and column
-        row_idx = randint(0, 3)
-        col_idx = randint(0, 3)
-
-        # Replace with random int between 0 and 3
-        mutated_policy[row_idx, col_idx] = randint(0, 3)
-
-        # Create a new agent with the mutated policy
-        mutated_agent = Agent(policy_matrix=mutated_policy)
-
-        # Add mutated agent to the mutated population
-        mutated_population.append(mutated_agent)
-
-    return mutated_population
-
+            population[parent1].policy_matrix = offspring1_policy
+            crossover_population.append(population[parent1])
+            population[parent2].policy_matrix = offspring2_policy
+            crossover_population.append(population[parent2])
+    return crossover_population
