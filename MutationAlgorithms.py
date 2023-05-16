@@ -23,3 +23,13 @@ def mutate_population(population):
         mutated_population.append(mutated_agent)
 
     return mutated_population
+
+
+def standard_mutation(individual, mutation_rate):
+    mutated_individual = individual.copy()  # Create a copy of the individual
+
+    for i in range(len(mutated_individual)):
+        if random.random() < mutation_rate:  # Check if mutation should occur
+            mutated_individual[i] = random.randint(0, 1)  # Mutate the gene with a random value (0 or 1)
+
+    return mutated_individual
