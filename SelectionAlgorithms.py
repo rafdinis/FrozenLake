@@ -69,3 +69,23 @@ def ranking_selection(population, fitness_scores ):
         selected_individuals.append(sorted_population[selected_rank])
 
     return selected_individuals
+
+def roulette_wheel_selection(population, fitness_scores):
+    total_fitness = sum(fitness_scores)
+    probabilities = [score / total_fitness for score in fitness_scores]
+
+    # Create a cumulative probability distribution
+    cumulative_probabilities = [sum(probabilities[:i+1]) for i in range(len(probabilities))]
+
+    selected = []
+    for _ in range(len(population)):
+        # Spin the roulette wheel
+        spin = random.uniform(0, 1)
+
+        # Find the selected individual based on the spin
+        for i, individual in enumerate(population):
+            if spin <= cumulative_probabilities[i]:
+                selected.append(individual)
+                break
+
+    return selected
