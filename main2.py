@@ -47,7 +47,7 @@ class GeneticAlgorithm:
         fitness_value = agent.get_fitness(state)
         agent.set_fitness(fitness_value)
 
-    def run(self):
+    def run(self, selection = 0, crossover = 0, mutation = 0):
         for gen in range(self.generations):
             for agent in self.population:
                 self.evaluate_fitness(agent)
@@ -88,4 +88,3 @@ def test():
 
 if __name__ == "__main__":
     test()
-

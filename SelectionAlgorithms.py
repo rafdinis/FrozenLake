@@ -70,9 +70,18 @@ def ranking_selection(population, fitness_scores ):
 
     return selected_individuals
 
-def roulette_wheel_selection(population, fitness_scores):
-    total_fitness = sum(fitness_scores)
-    probabilities = [score / total_fitness for score in fitness_scores]
+def roulette_wheel_selection(population):
+
+
+    fitness_sum = 0
+    fitness_list = []
+
+    for i in population:
+        fitness_sum += i.fitness
+        fitness_list.append(i.fitness)
+
+    total_fitness = fitness_sum
+    probabilities = [score / total_fitness for score in fitness_list]
 
     # Create a cumulative probability distribution
     cumulative_probabilities = [sum(probabilities[:i+1]) for i in range(len(probabilities))]
