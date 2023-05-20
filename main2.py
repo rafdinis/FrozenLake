@@ -53,9 +53,9 @@ class GeneticAlgorithm:
                 self.evaluate_fitness(agent)
 
             # selection, crossover, and mutation operations
-            self.population = elitist_selection(self.population)
+            self.population = tournament_algorithm(self.population)
             self.population = Alternated_mosaic(self.population)
-            self.population = mutate_population(self.population)
+            self.population = standard_mutation(self.population)
 
         for agent in self.population:
             self.evaluate_fitness(agent)
