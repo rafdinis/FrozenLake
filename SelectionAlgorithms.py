@@ -19,8 +19,6 @@ def elitist_selection(population, top_percent=0.3):
 
     return selected_population
 
-
-
 def tournament_algorithm(population):
     # Calculate total fitness and create a list of fitness values
     fitness_sum = 0
