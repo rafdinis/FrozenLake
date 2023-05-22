@@ -1,21 +1,18 @@
 from random import *
 from Agent import *
-from enum import Enum
+from enum import IntEnum
 
-class MutationEnum(Enum):
+class MutationEnum(IntEnum):
     RANDOM_RESETTING = 0
     SWAP_MUTATION = 1
 
 def mutate_population(population, mutation_type):
-
+    
     if mutation_type == MutationEnum.RANDOM_RESETTING:
-        print("random resetting")
-        mutated_population = random_resetting(population)
-    elif mutation_type == MutationEnum.SWAP_MUTATION:
-        print("swap mutation")
-        mutated_population = swap_mutation(population)
+        return random_resetting(population)
+    if mutation_type == MutationEnum.SWAP_MUTATION:
+        return swap_mutation(population)
 
-    return mutated_population
 
 def random_resetting(population): 
     mutated_population = []
