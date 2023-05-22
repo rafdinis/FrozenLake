@@ -55,11 +55,13 @@ def swap_mutation(policy):
 def scramble_mutation(policy):
 
     # two random rows
-    row1 = randint(0, 3)
-    row2 = randint(0, 3)
+    rowIndex1 = randint(0, 3)
+    rowIndex2 = randint(0, 3)
+    row1 = policy[rowIndex1]
+    row2 = policy[rowIndex2]
 
-    policy[row1] = np.random.shuffle(policy[row1])
-    policy[row2] = np.random.shuffle(policy[row2])
+    policy[rowIndex1] = np.random.shuffle(row1)
+    policy[rowIndex2] = np.random.shuffle(row2)
 
     # Create a new agent with the mutated policy
     mutated_agent = Agent(policy_matrix=policy)
