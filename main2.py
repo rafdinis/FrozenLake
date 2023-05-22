@@ -71,14 +71,9 @@ class GeneticAlgorithm:
             if crossover == 2:
                 self.population = Double_point(self.population)
 
-            if mutation == 0:
-                self.population = standard_mutation(self.population)
-            if mutation == 1:
-                self.population = standard_mutation(self.population)
-            if mutation == 2:
-                self.population = standard_mutation(self.population)
+            self.population = standard_mutation(self.population, mutation)
 
-        for agent in self.population:
+        for agent in self.populatigiton:
             self.evaluate_fitness(agent)
 
         self.max_fitness.append(max(agent.fitness for agent in self.population))

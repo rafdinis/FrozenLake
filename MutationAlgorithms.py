@@ -2,7 +2,7 @@ from random import *
 from Agent import *
 
 
-def standard_mutation(population):
+def standard_mutation(population, mutation = 0):
     mutated_population = []
 
     for agent in population:
