@@ -1,6 +1,7 @@
 import pandas as pd
 from sklearn.metrics import accuracy_score, f1_score, cohen_kappa_score, mean_squared_error
 import numpy as np
+import random
 
 
 def manhattan_distance(state):
@@ -20,6 +21,8 @@ class Agent:
     def __init__(self, policy_matrix=None):
         if policy_matrix is None:
             self.policy_matrix = np.zeros((4, 4), dtype=int)
+        elif policy_matrix == "random":
+            self.policy_matrix = np.random.randint(4, size=(4, 4))
         else:
             self.policy_matrix = policy_matrix
         self.fitness = None

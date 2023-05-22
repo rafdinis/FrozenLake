@@ -7,7 +7,6 @@ from CrossoverAlgorithms import *
 from MutationAlgorithms import *
 import matplotlib.pyplot as plt
 
-
 class Environment:
     def __init__(self, env_name, is_slippery=False, render_mode="human"):
         self.env = gym.make(env_name, is_slippery=is_slippery)
@@ -28,12 +27,12 @@ class GeneticAlgorithm:
         self.env = env
         self.population_size = population_size
         self.generations = generations
-        self.population = self.initialize_population()
+        self.initialize_population()
         self.max_fitness = []
 
-    def initialize_population(self):
-        agent_population = [Agent() for _ in range(self.population_size)]
-        return agent_population
+    def initialize_population(self, policy_matrix=None):
+        agent_population = [Agent(policy_matrix=policy_matrix) for _ in range(self.population_size)]
+        self.population = agent_population
 
     def evaluate_fitness(self, agent):
         state = self.env.reset()
@@ -50,6 +49,9 @@ class GeneticAlgorithm:
         agent.set_fitness(fitness_value)
 
     def run(self, selection = 0, crossover = 0, mutation = 0):
+        if mutation == MutationEnum.SWAP_MUTATION: 
+            self.initialize_population(policy_matrix="random")
+
         for gen in range(self.generations):
             for agent in self.population:
                 self.evaluate_fitness(agent)
@@ -71,12 +73,7 @@ class GeneticAlgorithm:
             if crossover == 2:
                 self.population = Double_point(self.population)
 
-            if mutation == 0:
-                self.population = standard_mutation(self.population)
-            if mutation == 1:
-                self.population = standard_mutation(self.population)
-            if mutation == 2:
-                self.population = standard_mutation(self.population)
+            self.population = mutate_population(self.population, mutation)
 
         for agent in self.population:
             self.evaluate_fitness(agent)
@@ -97,8 +94,8 @@ class GeneticAlgorithm:
 
 def test():
     env = Environment("FrozenLake-v1", is_slippery=False)
-    ga = GeneticAlgorithm(env, population_size=10, generations=1000)
-    best_agent = ga.run(selection=0, crossover=0, mutation=0)
+    ga = GeneticAlgorithm(env, population_size=10, generations=100)
+    best_agent = ga.run(selection=0, crossover=0, mutation=1)
 
     state = env.reset()
     steps = 0
