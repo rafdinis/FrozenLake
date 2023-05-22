@@ -18,11 +18,12 @@ def manhattan_distance(state):
 
 
 class Agent:
-    def __init__(self, policy_matrix=None):
+    def __init__(self, policy_matrix=None, initRandom=False):
         if policy_matrix is None:
-            self.policy_matrix = np.zeros((4, 4), dtype=int)
-        elif policy_matrix == "random":
-            self.policy_matrix = np.random.randint(4, size=(4, 4))
+            if initRandom:
+                self.policy_matrix = np.random.randint(4, size=(4, 4))
+            else:
+                self.policy_matrix = np.zeros((4, 4), dtype=int)
         else:
             self.policy_matrix = policy_matrix
         self.fitness = None

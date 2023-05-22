@@ -4,62 +4,67 @@ from enum import IntEnum
 
 class MutationEnum(IntEnum):
     RANDOM_RESETTING = 0
-    SWAP_MUTATION = 1
+    SWAP = 1
+    SCRAMBLE = 2
 
 def mutate_population(population, mutation_type):
+    mutated_population = []
     
-    if mutation_type == MutationEnum.RANDOM_RESETTING:
-        return random_resetting(population)
-    if mutation_type == MutationEnum.SWAP_MUTATION:
-        return swap_mutation(population)
-
-
-def random_resetting(population): 
-    mutated_population = []
-
     for agent in population:
         # Copy the policy matrix
-        mutated_policy = agent.policy_matrix.copy()
+        policy = agent.policy_matrix.copy()
 
-        # Random row and column
-        row_idx = randint(0, 3)
-        col_idx = randint(0, 3)
-
-        # Replace with random int between 0 and 3
-        mutated_policy[row_idx, col_idx] = randint(0, 3)
-
-        # Create a new agent with the mutated policy
-        mutated_agent = Agent(policy_matrix=mutated_policy)
-
-        # Add mutated agent to the mutated population
-        mutated_population.append(mutated_agent)
+        if mutation_type == MutationEnum.RANDOM_RESETTING:
+            mutated_population.append(random_resetting(policy))
+        if mutation_type == MutationEnum.SWAP:
+            mutated_population.append(swap_mutation(policy))
+        if mutation_type == MutationEnum.SCRAMBLE:
+            mutated_population.append(swap_mutation(policy))
 
     return mutated_population
 
-def swap_mutation(population):
-    mutated_population = []
 
-    for agent in population:
-        # Copy the policy matrix
-        mutated_policy = agent.policy_matrix.copy()
-        print("before:", mutated_policy)
-        # Random row and column
-        cell1 = (randint(0, 3), randint(0, 3))
-        cell2 = (randint(0, 3), randint(0, 3))
+def random_resetting(policy): 
+    # Random row and column
+    row_idx = randint(0, 3)
+    col_idx = randint(0, 3)
 
-        # Replace with random int between 0 and 3
-        temp = mutated_policy[cell1]
-        mutated_policy[cell1] = mutated_policy[cell2]
-        mutated_policy[cell2] = temp
-        print("after:", mutated_policy)
+    # Replace with random int between 0 and 3
+    policy[row_idx, col_idx] = randint(0, 3)
 
-        # Create a new agent with the mutated policy
-        mutated_agent = Agent(policy_matrix=mutated_policy)
+    # Create a new agent with the mutated policy
+    mutated_agent = Agent(policy_matrix=policy)
 
-        # Add mutated agent to the mutated population
-        mutated_population.append(mutated_agent)
+    return mutated_agent
 
-    return mutated_population
+def swap_mutation(policy):
+    # Random cells
+    cell1 = (randint(0, 3), randint(0, 3))
+    cell2 = (randint(0, 3), randint(0, 3))
+
+    # Replace with random int between 0 and 3
+    temp = policy[cell1]
+    policy[cell1] = policy[cell2]
+    policy[cell2] = temp
+
+    # Create a new agent with the mutated policy
+    mutated_agent = Agent(policy_matrix=policy)
+
+    return mutated_agent
+
+def scramble_mutation(policy):
+
+    # two random rows
+    row1 = randint(0, 3)
+    row2 = randint(0, 3)
+
+    policy[row1] = np.random.shuffle(policy[row1])
+    policy[row2] = np.random.shuffle(policy[row2])
+
+    # Create a new agent with the mutated policy
+    mutated_agent = Agent(policy_matrix=policy)
+
+    return mutated_agent
 
 def standard_mutation(individual, mutation_rate):
     mutated_individual = individual.copy()  # Create a copy of the individual
