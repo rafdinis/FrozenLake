@@ -3,8 +3,8 @@ from Agent import *
 from enum import Enum
 
 class MutationEnum(Enum):
-    RANDOM_RESETTING = "random_resetting"
-    SWAP_MUTATION = "swap_mutation"
+    RANDOM_RESETTING = 0
+    SWAP_MUTATION = 1
 
 def mutate_population(population, mutation_type):
 
