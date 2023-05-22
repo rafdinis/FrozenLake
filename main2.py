@@ -5,6 +5,7 @@ from Agent import *
 from SelectionAlgorithms import *
 from CrossoverAlgorithms import *
 from MutationAlgorithms import *
+import matplotlib.pyplot as plt
 
 
 class Environment:
@@ -28,6 +29,7 @@ class GeneticAlgorithm:
         self.population_size = population_size
         self.generations = generations
         self.population = self.initialize_population()
+        self.max_fitness = []
 
     def initialize_population(self):
         agent_population = [Agent() for _ in range(self.population_size)]
@@ -52,22 +54,51 @@ class GeneticAlgorithm:
             for agent in self.population:
                 self.evaluate_fitness(agent)
 
+            self.max_fitness.append(max(agent.fitness for agent in self.population))
+
+            if selection == 0:
             # selection, crossover, and mutation operations
-            self.population = elitist_selection(self.population)
-            self.population = Alternated_mosaic(self.population)
-            self.population = mutate_population(self.population)
+                self.population = elitist_selection(self.population)
+            elif selection == 1:
+                self.population = elitist_selection(self.population)
+            elif selection == 2:
+                self.population = elitist_selection(self.population)
+
+            if crossover == 0:
+                self.population = Single_point(self.population)
+            if crossover == 1:
+                self.population = Alternated_mosaic(self.population)
+            if crossover == 2:
+                self.population = Double_point(self.population)
+
+            if mutation == 0:
+                self.population = standard_mutation(self.population)
+            if mutation == 1:
+                self.population = standard_mutation(self.population)
+            if mutation == 2:
+                self.population = standard_mutation(self.population)
 
         for agent in self.population:
             self.evaluate_fitness(agent)
 
+        self.max_fitness.append(max(agent.fitness for agent in self.population))
+
         # Return the best agent after running the GA
         return max(self.population, key=lambda agent: agent.fitness)
+
+    def plot_fitness_curve(self):
+        plt.figure()
+        plt.plot(range(self.generations + 1), self.max_fitness)
+        plt.title("Max Fitness (1 is the goal)")
+        plt.xlabel("Generation")
+        plt.ylabel("Fitness")
+        plt.show()
 
 
 def test():
     env = Environment("FrozenLake-v1", is_slippery=False)
-    ga = GeneticAlgorithm(env, population_size=10, generations=100)
-    best_agent = ga.run()
+    ga = GeneticAlgorithm(env, population_size=10, generations=1000)
+    best_agent = ga.run(selection=0, crossover=0, mutation=0)
 
     state = env.reset()
     steps = 0
@@ -82,6 +113,7 @@ def test():
     print(best_agent.policy_matrix)
     print(best_agent.fitness)
 
+    ga.plot_fitness_curve()
 
     env.close()
 
