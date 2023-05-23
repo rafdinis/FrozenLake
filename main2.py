@@ -115,11 +115,14 @@ def Base(selection=0, crossover=0, mutation=1):
     return best_agent
 
 
-def plot_fitness_curve(ABFlist):
+def plot_fitness_curve(ABFlist, combinations):
     plt.figure()
-    for a in ABFlist:
+    labels = []
+    for idx, a in enumerate(ABFlist):
         plt.plot(range(len(a)), a)
-        plt.legend(a)
+        labels.append("".join(map(str, combinations[idx])))
+    
+    plt.legend(labels)
     plt.title("Max Fitness (1 is the goal)")
     plt.xlabel("Generation")
     plt.ylabel("Fitness")
@@ -152,7 +155,7 @@ def statistical_mode(runs=30, search=0):
         algorithm_ABF.append(ABF)
         c += 1
 
-    plot_fitness_curve(algorithm_ABF)
+    plot_fitness_curve(algorithm_ABF, combinations)
 
 
 if __name__ == "__main__":
