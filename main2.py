@@ -128,8 +128,19 @@ def plot_fitness_curve(ABFlist, combinations):
     plt.ylabel("Fitness")
     plt.show()
 
+def get_top_5(algorithm_ABF, combinations):
+    averages = [sum(sublist) / len(sublist) for sublist in algorithm_ABF]
 
-def statistical_mode(runs=30, search=0):
+    # Sort the sublists based on their average
+    sorted_sublists = sorted(enumerate(algorithm_ABF), key=lambda x: averages[x[0]], reverse=True)
+
+    # Get the top 5 sublists with their averages and indexes
+    indexes_top_5 = [index for index, _ in sorted_sublists[:5]]
+    abfs_top_5 = [algorithm_ABF[index] for index in indexes_top_5]
+    combinations_top_5 = [combinations[index] for index in indexes_top_5]
+    return abfs_top_5, combinations_top_5
+
+def statistical_mode(runs=10, search=0):
 
     #Perform grid search if search is zero
     if search == 0:
@@ -154,8 +165,8 @@ def statistical_mode(runs=30, search=0):
             ABF.append(sum(run[gen] for run in best_fitness_of_run) / runs)
         algorithm_ABF.append(ABF)
         c += 1
-
-    plot_fitness_curve(algorithm_ABF, combinations)
+    abfs_top_5, combinations_top_5 = get_top_5(algorithm_ABF, combinations)
+    plot_fitness_curve(abfs_top_5, combinations_top_5)
 
 
 if __name__ == "__main__":
