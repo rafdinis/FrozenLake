@@ -6,6 +6,8 @@ from SelectionAlgorithms import *
 from CrossoverAlgorithms import *
 from MutationAlgorithms import *
 import matplotlib.pyplot as plt
+import itertools
+
 
 class Environment:
     def __init__(self, env_name, is_slippery=False, render_mode="human"):
@@ -27,11 +29,11 @@ class GeneticAlgorithm:
         self.env = env
         self.population_size = population_size
         self.generations = generations
-        self.initialize_population()
+        self.population = []
         self.max_fitness = []
 
-    def initialize_population(self, initRandom=False):
-        agent_population = [Agent(initRandom=initRandom) for _ in range(self.population_size)]
+    def initialize_population(self, policy_matrix=None, initRandom=False):
+        agent_population = [Agent(policy_matrix=policy_matrix, initRandom=initRandom) for _ in range(self.population_size)]
         self.population = agent_population
 
     def evaluate_fitness(self, agent):
@@ -49,8 +51,10 @@ class GeneticAlgorithm:
         agent.set_fitness(fitness_value)
 
     def run(self, selection = 0, crossover = 0, mutation = 0):
-        if mutation == MutationEnum.SWAP or mutation == MutationEnum.SCRAMBLE: 
-            self.initialize_population(initRandom=True)
+        if mutation == MutationEnum.SWAP or mutation == MutationEnum.SCRAMBLE:
+            self.initialize_population(policy_matrix=None, initRandom=True)
+        else:
+            self.initialize_population(policy_matrix=None, initRandom=False)
 
         for gen in range(self.generations):
             for agent in self.population:
@@ -81,7 +85,7 @@ class GeneticAlgorithm:
         self.max_fitness.append(max(agent.fitness for agent in self.population))
 
         # Return the best agent after running the GA
-        return max(self.population, key=lambda agent: agent.fitness)
+        return max(self.population, key=lambda agent: agent.fitness), self.max_fitness
 
     def plot_fitness_curve(self):
         plt.figure()
@@ -92,28 +96,64 @@ class GeneticAlgorithm:
         plt.show()
 
 
-def test():
+def Base(selection=0, crossover=0, mutation=1):
     env = Environment("FrozenLake-v1", is_slippery=False)
-    ga = GeneticAlgorithm(env, population_size=10, generations=200)
-    best_agent = ga.run(selection=0, crossover=0, mutation=2)
+    ga = GeneticAlgorithm(env, population_size=10, generations=100)
+    best_agent = ga.run(selection, crossover, mutation)
 
     state = env.reset()
     steps = 0
     done = False
     while not done and steps < 100:
-        action = best_agent.choose_action(state)
+        action = best_agent[0].choose_action(state)
         new_state = env.step(action)
         done = new_state[2]
         state = new_state
         steps += 1
 
-    print(best_agent.policy_matrix)
-    print(best_agent.fitness)
-
-    ga.plot_fitness_curve()
-
     env.close()
+    return best_agent
+
+
+def plot_fitness_curve(ABFlist):
+    plt.figure()
+    for a in ABFlist:
+        plt.plot(range(len(a)), a)
+        plt.legend(a)
+    plt.title("Max Fitness (1 is the goal)")
+    plt.xlabel("Generation")
+    plt.ylabel("Fitness")
+    plt.show()
+
+
+def statistical_mode(runs=30, search=0):
+
+    #Perform grid search if search is zero
+    if search == 0:
+        values = [0, 1, 2]
+        combination_length = 3
+        combinations = list(itertools.product(values, repeat=combination_length))
+
+    algorithm_ABF = []
+
+    c = 0
+    while c < len(combinations):
+        best_fitness_of_run = []
+
+        for _ in range(runs):
+            best_agent = Base(combinations[c][0], combinations[c][1], combinations[c][2])
+            best_fitness_of_run.append((best_agent[1]))
+
+        ABF = []
+        num_generations = len(best_fitness_of_run[0])
+
+        for gen in range(num_generations):
+            ABF.append(sum(run[gen] for run in best_fitness_of_run) / runs)
+        algorithm_ABF.append(ABF)
+        c += 1
+
+    plot_fitness_curve(algorithm_ABF)
 
 
 if __name__ == "__main__":
-    test()
+    statistical_mode()

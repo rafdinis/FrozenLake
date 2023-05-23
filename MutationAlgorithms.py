@@ -2,10 +2,12 @@ from random import *
 from Agent import *
 from enum import IntEnum
 
+
 class MutationEnum(IntEnum):
     RANDOM_RESETTING = 0
     SWAP = 1
     SCRAMBLE = 2
+
 
 def mutate_population(population, mutation_type):
     mutated_population = []
@@ -37,6 +39,7 @@ def random_resetting(policy):
 
     return mutated_agent
 
+
 def swap_mutation(policy):
     # Random cells
     cell1 = (randint(0, 3), randint(0, 3))
@@ -51,6 +54,7 @@ def swap_mutation(policy):
     mutated_agent = Agent(policy_matrix=policy)
 
     return mutated_agent
+
 
 def scramble_mutation(policy):
 
@@ -67,6 +71,7 @@ def scramble_mutation(policy):
     mutated_agent = Agent(policy_matrix=policy)
 
     return mutated_agent
+
 
 def standard_mutation(individual, mutation_rate):
     mutated_individual = individual.copy()  # Create a copy of the individual
