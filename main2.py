@@ -115,45 +115,57 @@ def Base(selection=0, crossover=0, mutation=1):
     return best_agent
 
 
-def plot_fitness_curve(ABFlist, median_fitness_list, success_rate_list, combinations, top_n=5):
+def plot_fitness_curve(abf_list, combinations_abs, amf_list, combinations_amf, asr_list, combinations_asr):
     plt.figure()
-    labels = []
-    for idx, a in enumerate(ABFlist):
-        if idx < top_n:  # Show labels for top N algorithms
-            plt.plot(range(len(a)), a)
-            labels.append("".join(map(str, combinations[idx])))
-        else:  # Do not plot for algorithms beyond top N
-            labels.append("")  # Empty label for non-plotted algorithms
+    labels_abf = []
+    for idx, a in enumerate(abf_list):
+        plt.plot(range(len(a)), a)
+        labels_abf.append("".join(map(str, combinations_abs[idx])))
 
-    plt.legend(labels)
+    plt.legend(labels_abf)
     plt.title("Max Fitness (1 is the goal)")
     plt.xlabel("Generation")
     plt.ylabel("Fitness")
 
     # Plot median fitness
     plt.figure()
-    for i in range(len(median_fitness_list)):
-        if i < top_n:  # Show plot for top N algorithms
-            plt.plot(range(len(median_fitness_list[i])), median_fitness_list[i], label=labels[i])
 
-    plt.legend(labels)
+    labels_amf = []
+    for idx, a in enumerate(amf_list):
+        plt.plot(range(len(a)), a)
+        labels_amf.append("".join(map(str, combinations_amf[idx])))
+
+    plt.legend(labels_amf)
     plt.title("Median Fitness")
     plt.xlabel("Generation")
     plt.ylabel("Fitness")
 
     # Plot success rates
     plt.figure()
-    for i in range(len(success_rate_list)):
-        if i < top_n:  # Show plot for top N algorithms
-            plt.plot(range(len(success_rate_list[i])), success_rate_list[i], label=labels[i])
 
-    plt.legend(labels)
+    labels_asr = []
+    for idx, a in enumerate(asr_list):
+        plt.plot(range(len(a)), a)
+        labels_asr.append("".join(map(str, combinations_asr[idx])))
+
+    plt.legend(labels_asr)
     plt.title("Success Rates")
     plt.xlabel("Generation")
     plt.ylabel("Success Rate")
 
     plt.show()
 
+def get_top_5(algorithm_ABF, combinations):
+    averages = [sum(sublist) / len(sublist) for sublist in algorithm_ABF]
+
+    # Sort the sublists based on their average
+    sorted_sublists = sorted(enumerate(algorithm_ABF), key=lambda x: averages[x[0]], reverse=True)
+
+    # Get the top 5 sublists with their averages and indexes
+    indexes_top_5 = [index for index, _ in sorted_sublists[:5]]
+    abfs_top_5 = [algorithm_ABF[index] for index in indexes_top_5]
+    combinations_top_5 = [combinations[index] for index in indexes_top_5]
+    return abfs_top_5, combinations_top_5
 
 def statistical_mode(runs=30, search=0, top_n=5):
 
@@ -193,13 +205,12 @@ def statistical_mode(runs=30, search=0, top_n=5):
         algorithm_success_rates.append(success_rates)
 
         c += 1
+    
+    abs_top_5, combinations_abs_top_5 = get_top_5(algorithm_ABF, combinations)
+    amf_top_5, combinations_amf_top_5 = get_top_5(algorithm_median_fitness, combinations)
+    asr_top_5, combinations_asr_top_5 = get_top_5(algorithm_success_rates, combinations)
 
-    combinations = combinations[:top_n]
-    algorithm_ABF = algorithm_ABF[:top_n]
-    algorithm_median_fitness = algorithm_median_fitness[:top_n]
-    algorithm_success_rates = algorithm_success_rates[:top_n]
-
-    plot_fitness_curve(algorithm_ABF, algorithm_median_fitness, algorithm_success_rates, combinations, top_n=top_n)
+    plot_fitness_curve(abs_top_5, combinations_abs_top_5, amf_top_5, combinations_amf_top_5, asr_top_5, combinations_asr_top_5)
 
 
 if __name__ == "__main__":
