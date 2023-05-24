@@ -115,17 +115,44 @@ def Base(selection=0, crossover=0, mutation=1):
     return best_agent
 
 
-def plot_fitness_curve(ABFlist, combinations):
+def plot_fitness_curve(abf_list, combinations_abs, amf_list, combinations_amf, asr_list, combinations_asr):
     plt.figure()
-    labels = []
-    for idx, a in enumerate(ABFlist):
+    labels_abf = []
+    for idx, a in enumerate(abf_list):
         plt.plot(range(len(a)), a)
-        labels.append("".join(map(str, combinations[idx])))
-    
-    plt.legend(labels)
+        labels_abf.append("".join(map(str, combinations_abs[idx])))
+
+    plt.legend(labels_abf)
     plt.title("Max Fitness (1 is the goal)")
     plt.xlabel("Generation")
     plt.ylabel("Fitness")
+
+    # Plot median fitness
+    plt.figure()
+
+    labels_amf = []
+    for idx, a in enumerate(amf_list):
+        plt.plot(range(len(a)), a)
+        labels_amf.append("".join(map(str, combinations_amf[idx])))
+
+    plt.legend(labels_amf)
+    plt.title("Median Fitness")
+    plt.xlabel("Generation")
+    plt.ylabel("Fitness")
+
+    # Plot success rates
+    plt.figure()
+
+    labels_asr = []
+    for idx, a in enumerate(asr_list):
+        plt.plot(range(len(a)), a)
+        labels_asr.append("".join(map(str, combinations_asr[idx])))
+
+    plt.legend(labels_asr)
+    plt.title("Success Rates")
+    plt.xlabel("Generation")
+    plt.ylabel("Success Rate")
+
     plt.show()
 
 def get_top_5(algorithm_ABF, combinations):
@@ -140,15 +167,17 @@ def get_top_5(algorithm_ABF, combinations):
     combinations_top_5 = [combinations[index] for index in indexes_top_5]
     return abfs_top_5, combinations_top_5
 
-def statistical_mode(runs=10, search=0):
+def statistical_mode(runs=30, search=0, top_n=5):
 
-    #Perform grid search if search is zero
+    # Perform grid search if search is zero
     if search == 0:
         values = [0, 1, 2]
         combination_length = 3
         combinations = list(itertools.product(values, repeat=combination_length))
 
     algorithm_ABF = []
+    algorithm_median_fitness = []
+    algorithm_success_rates = []
 
     c = 0
     while c < len(combinations):
@@ -159,15 +188,31 @@ def statistical_mode(runs=10, search=0):
             best_fitness_of_run.append((best_agent[1]))
 
         ABF = []
+        median_fitness = []
+        success_rates = []
+
         num_generations = len(best_fitness_of_run[0])
 
         for gen in range(num_generations):
             ABF.append(sum(run[gen] for run in best_fitness_of_run) / runs)
+            fitness_values = [run[gen] for run in best_fitness_of_run]
+            median_fitness.append(np.median(fitness_values))
+            success_rate = sum(1 for fitness in fitness_values if fitness == 1) / runs
+            success_rates.append(success_rate)
+
         algorithm_ABF.append(ABF)
+        algorithm_median_fitness.append(median_fitness)
+        algorithm_success_rates.append(success_rates)
+
         c += 1
-    abfs_top_5, combinations_top_5 = get_top_5(algorithm_ABF, combinations)
-    plot_fitness_curve(abfs_top_5, combinations_top_5)
+    
+    abs_top_5, combinations_abs_top_5 = get_top_5(algorithm_ABF, combinations)
+    amf_top_5, combinations_amf_top_5 = get_top_5(algorithm_median_fitness, combinations)
+    asr_top_5, combinations_asr_top_5 = get_top_5(algorithm_success_rates, combinations)
+
+    plot_fitness_curve(abs_top_5, combinations_abs_top_5, amf_top_5, combinations_amf_top_5, asr_top_5, combinations_asr_top_5)
 
 
 if __name__ == "__main__":
     statistical_mode()
+       
