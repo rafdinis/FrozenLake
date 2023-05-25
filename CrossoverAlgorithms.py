@@ -6,7 +6,7 @@ from Agent import *
 
 
 
-def Single_point(population, crossover_rate=0.1):
+def Single_point(population, crossover_rate=0.9):
     crossover_population = []
 
     parent_indexadd = []
