@@ -6,7 +6,7 @@ from Agent import *
 
 
 
-def Single_point(population, crossover_rate=0.5):
+def Single_point(population, crossover_rate=0.9):
     crossover_population = []
 
     parent_indexadd = []
@@ -55,7 +55,7 @@ def Single_point(population, crossover_rate=0.5):
             crossover_population.append(population[parent2])
     return crossover_population
 
-def Alternated_mosaic(population, crossover_rate=0.5):
+def Alternated_mosaic(population, crossover_rate=0.1):
     crossover_population = []
 
     parent_indexadd = []
