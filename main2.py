@@ -64,11 +64,11 @@ class GeneticAlgorithm:
 
             if selection == 0:
             # selection, crossover, and mutation operations
-                self.population = elitist_selection(self.population)
+                self.population = tournament_algorithm(self.population)
             elif selection == 1:
-                self.population = elitist_selection(self.population)
+                self.population = tournament_algorithm(self.population)
             elif selection == 2:
-                self.population = elitist_selection(self.population)
+                self.population = tournament_algorithm(self.population)
 
             if crossover == 0:
                 self.population = Single_point(self.population)

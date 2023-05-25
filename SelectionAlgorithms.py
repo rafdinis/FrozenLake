@@ -1,25 +1,22 @@
+
 import numpy as np
 import random
 
-
-def elitist_selection(population, top_percent=0.3):
+#def elitist_selection(population, top_percent=0.3):
     # Sort the population by the fitness value of each agent
-    sorted_population = sorted(population, key=lambda agent: agent.fitness, reverse=True)
-
+#    sorted_population = sorted(population, key=lambda agent: agent.fitness, reverse=True)
     # Calculate the number of top agents to select
-    num_best = int(top_percent * len(sorted_population))
-
+#    num_best = int(top_percent * len(sorted_population))
     # Select the top agents
-    selected_population = sorted_population[:num_best]
-
+#    selected_population = sorted_population[:num_best]
     # Fill with the rest of the population by randomly selecting from the top agents
-    while len(selected_population) < len(population):
-        chosen_agent = random.choice(sorted_population[:num_best])
-        selected_population.append(chosen_agent)
+#    while len(selected_population) < len(population):
+#        chosen_agent = random.choice(sorted_population[:num_best])
+#        selected_population.append(chosen_agent)
+#    return selected_population
 
-    return selected_population
-
-def tournament_algorithm(population):
+#Tournment Selection Algorithm
+def tournament_algorithm(population, elite_percent=0.1):
     # Calculate total fitness and create a list of fitness values
     fitness_sum = 0
     fitness_list = []
@@ -30,11 +27,14 @@ def tournament_algorithm(population):
     # Set the tournament size
     tournament_size = 4
     
-    # Initialize the selected individuals list
-    selected = []
+    # Calculate the number of elite individuals to select
+    elite_count = int(len(population) * elite_percent)
     
-    # Perform tournament selection for each individual in the population
-    for _ in range(len(population)):
+    # Initialize the selected individuals list with elite individuals
+    selected = population[:elite_count]
+    
+    # Perform tournament selection for the remaining individuals
+    for _ in range(elite_count, len(population)):
         # Select individuals for the tournament
         tournament = random.sample(population, tournament_size)
         
@@ -46,6 +46,7 @@ def tournament_algorithm(population):
         selected.append(winner)
     
     return selected
+
 
 def ranking_selection(population):
     fitness_sum = 0
