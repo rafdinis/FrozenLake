@@ -58,22 +58,19 @@ class Agent:
         row, col = state[0] // 4, state[0] % 4
         return self.policy_matrix[row, col]
 
-    def set_fitness(self, fitness_value_manhattan, fitness_value_radial, fitness_value_euclidean):
-        self.fitness_manhattan = fitness_value_manhattan
-        self.fitness_radial = fitness_value_radial
-        self.fitness_euclidean = fitness_value_euclidean
+    def set_fitness(self, fitness_value):
+        self.fitness_value = fitness_value
 
-    def get_fitness_manhattan(self, state):
-        distance = manhattan_distance(state)
-        fitness_value_manhattan = 1 / (1 + distance)
-        return fitness_value_manhattan
-    
-    def get_fitness_radial(self, state):
-        distance = radial_distance(state)
-        fitness_value_radial = 1 / (1 + distance)
-        return fitness_value_radial
-    
-    def get_fitness_euclidean(self, state):
-        distance = euclidean_distance(state)
+    def get_fitness(self, state, metric):
+        if metric == 'manhattan':
+            distance = manhattan_distance(state)
+        elif metric == 'radial':
+            distance = radial_distance(state)
+        elif metric == 'euclidean':
+            distance = euclidean_distance(state)
+        else:
+            raise ValueError("Invalid metric. Please choose 'manhattan', 'radial', or 'euclidean'.")
+
         fitness_value = 1 / (1 + distance)
-        return fitness_value_euclidean
+        return fitness_value
+
