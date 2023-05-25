@@ -48,26 +48,38 @@ def tournament_algorithm(population, elite_percent=0.1):
     return selected
 
 
-def ranking_selection(population):
+#Ranking Selection Algorithm
+def ranking_selection(population, elite_percent=0.1):
     fitness_sum = 0
     fitness_list = []
     for i in population:
         fitness_sum += i.fitness
         fitness_list.append(i.fitness)
+    
     total_fitness = fitness_sum
     probabilities = [score / total_fitness for score in fitness_list]
+    
+    # Calculate the number of elite individuals to select
+    elite_count = int(len(population) * elite_percent)
+    
     # Create a cumulative probability distribution
     cumulative_probabilities = [sum(probabilities[:i+1]) for i in range(len(probabilities))]
-    selected_individuals = []
-    for _ in range(len(population)):
+    
+    # Initialize the selected individuals list with elite individuals
+    selected_individuals = population[:elite_count]
+    
+    # Select the remaining individuals
+    for _ in range(elite_count, len(population)):
         # Generate a random number between 0 and 1
         r = random.random()
+        
         # Find the smallest rank whose cumulative probability is greater than or equal to r
         selected_rank = next(rank for rank, cum_prob in enumerate(cumulative_probabilities) if cum_prob >= r)
+        
         # Select the individual with the selected rank
         selected_individuals.append(population[selected_rank])
+    
     return selected_individuals
-
 
 
 
