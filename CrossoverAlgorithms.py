@@ -1,5 +1,4 @@
 import pandas as pd
-from sklearn.metrics import accuracy_score, f1_score, cohen_kappa_score, mean_squared_error
 import numpy as np
 import random
 from Agent import *

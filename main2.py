@@ -33,28 +33,25 @@ class GeneticAlgorithm:
         self.max_fitness = []
 
     def initialize_population(self, policy_matrix=None, initRandom=False):
-        agent_population = [Agent(policy_matrix=policy_matrix, initRandom=initRandom) for _ in range(self.population_size)]
+        agent_population = [Agent(policy_matrix=policy_matrix, initRandom=initRandom) for _ in
+                            range(self.population_size)]
         self.population = agent_population
 
     def evaluate_fitness(self, agent):
-    state = self.env.reset()
-    steps = 0
-    done = False
-    while not done and steps < 100:
-        action = agent.choose_action(state)
-        new_state = self.env.step(action)
-        done = new_state[2]
-        state = new_state
-        steps += 1
+        state = self.env.reset()
+        steps = 0
+        done = False
+        while not done and steps < 100:
+            action = agent.choose_action(state)
+            new_state = self.env.step(action)
+            done = new_state[2]
+            state = new_state
+            steps += 1
 
-    fitness_value_manhattan = agent.get_fitness(state, 'manhattan')
-    fitness_value_radial = agent.get_fitness(state, 'radial')
-    fitness_value_euclidean = agent.get_fitness(state, 'euclidean')
+        fitness_value = agent.get_fitness(state)
+        agent.set_fitness(fitness_value)
 
-    agent.set_fitness(fitness_value_manhattan, fitness_value_radial, fitness_value_euclidean)
-
-
-    def run(self, selection = 0, crossover = 0, mutation = 0):
+    def run(self, selection=0, crossover=0, mutation=0):
         if mutation == MutationEnum.SWAP or mutation == MutationEnum.SCRAMBLE:
             self.initialize_population(policy_matrix=None, initRandom=True)
         else:
@@ -67,12 +64,12 @@ class GeneticAlgorithm:
             self.max_fitness.append(max(agent.fitness for agent in self.population))
 
             if selection == 0:
-            # selection, crossover, and mutation operations
+                # selection, crossover, and mutation operations
                 self.population = tournament_algorithm(self.population)
             elif selection == 1:
-                self.population = tournament_algorithm(self.population)
+                self.population = ranking_selection(self.population)
             elif selection == 2:
-                self.population = tournament_algorithm(self.population)
+                self.population = roulette_wheel_selection(self.population)
 
             if crossover == 0:
                 self.population = Single_point(self.population)
@@ -159,6 +156,7 @@ def plot_fitness_curve(abf_list, combinations_abs, amf_list, combinations_amf, a
 
     plt.show()
 
+
 def get_top_5(algorithm_ABF, combinations):
     averages = [sum(sublist) / len(sublist) for sublist in algorithm_ABF]
 
@@ -171,8 +169,8 @@ def get_top_5(algorithm_ABF, combinations):
     combinations_top_5 = [combinations[index] for index in indexes_top_5]
     return abfs_top_5, combinations_top_5
 
-def statistical_mode(runs=30, search=0, top_n=5):
 
+def statistical_mode(runs=30, search=0, top_n=5):
     # Perform grid search if search is zero
     if search == 0:
         values = [0, 1, 2]
@@ -208,15 +206,17 @@ def statistical_mode(runs=30, search=0, top_n=5):
         algorithm_median_fitness.append(median_fitness)
         algorithm_success_rates.append(success_rates)
 
+        print(c)
         c += 1
-    
+
+
     abs_top_5, combinations_abs_top_5 = get_top_5(algorithm_ABF, combinations)
     amf_top_5, combinations_amf_top_5 = get_top_5(algorithm_median_fitness, combinations)
     asr_top_5, combinations_asr_top_5 = get_top_5(algorithm_success_rates, combinations)
 
-    plot_fitness_curve(abs_top_5, combinations_abs_top_5, amf_top_5, combinations_amf_top_5, asr_top_5, combinations_asr_top_5)
+    plot_fitness_curve(abs_top_5, combinations_abs_top_5, amf_top_5, combinations_amf_top_5, asr_top_5,
+                       combinations_asr_top_5)
 
 
 if __name__ == "__main__":
     statistical_mode()
-       
