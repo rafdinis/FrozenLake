@@ -32,12 +32,12 @@ class GeneticAlgorithm:
         self.population = []
         self.max_fitness = []
 
-    def initialize_population(self, policy_matrix=None, initRandom=False):
-        agent_population = [Agent(policy_matrix=policy_matrix, initRandom=initRandom) for _ in
+    def initialize_population(self, policy_matrix=None):
+        agent_population = [Agent(policy_matrix=policy_matrix) for _ in
                             range(self.population_size)]
         self.population = agent_population
 
-    def evaluate_fitness(self, agent):
+    def evaluate_fitness(self, agent, metric="manhattan"):
         state = self.env.reset()
         steps = 0
         done = False
@@ -48,18 +48,15 @@ class GeneticAlgorithm:
             state = new_state
             steps += 1
 
-        fitness_value = agent.get_fitness(state)
+        fitness_value = agent.get_fitness(state, metric)
         agent.set_fitness(fitness_value)
 
-    def run(self, selection=0, crossover=0, mutation=0):
-        if mutation == MutationEnum.SWAP or mutation == MutationEnum.SCRAMBLE:
-            self.initialize_population(policy_matrix=None, initRandom=True)
-        else:
-            self.initialize_population(policy_matrix=None, initRandom=False)
+    def run(self, selection=0, crossover=0, mutation=0, metric="manhattan"):
+        self.initialize_population(policy_matrix=None)
 
         for gen in range(self.generations):
             for agent in self.population:
-                self.evaluate_fitness(agent)
+                self.evaluate_fitness(agent, metric)
 
             self.max_fitness.append(max(agent.fitness for agent in self.population))
 
@@ -81,7 +78,7 @@ class GeneticAlgorithm:
             self.population = mutate_population(self.population, mutation)
 
         for agent in self.population:
-            self.evaluate_fitness(agent)
+            self.evaluate_fitness(agent, metric)
 
         self.max_fitness.append(max(agent.fitness for agent in self.population))
 
@@ -97,10 +94,10 @@ class GeneticAlgorithm:
         plt.show()
 
 
-def Base(selection=0, crossover=0, mutation=1):
+def Base(selection=0, crossover=0, mutation=0, metric="manhattan"):
     env = Environment("FrozenLake-v1", is_slippery=False)
     ga = GeneticAlgorithm(env, population_size=10, generations=100)
-    best_agent = ga.run(selection, crossover, mutation)
+    best_agent = ga.run(selection, crossover, mutation, metric)
 
     state = env.reset()
     steps = 0
@@ -116,7 +113,7 @@ def Base(selection=0, crossover=0, mutation=1):
     return best_agent
 
 
-def plot_fitness_curve(abf_list, combinations_abs, amf_list, combinations_amf, asr_list, combinations_asr):
+def plot_fitness_curve(abf_list, combinations_abs, amf_list, combinations_amf, asr_list, combinations_asr, metric):
     plt.figure()
     labels_abf = []
     for idx, a in enumerate(abf_list):
@@ -124,7 +121,7 @@ def plot_fitness_curve(abf_list, combinations_abs, amf_list, combinations_amf, a
         labels_abf.append("".join(map(str, combinations_abs[idx])))
 
     plt.legend(labels_abf)
-    plt.title("Max Fitness (1 is the goal)")
+    plt.title("Max Fitness for "+metric)
     plt.xlabel("Generation")
     plt.ylabel("Fitness")
 
@@ -137,7 +134,7 @@ def plot_fitness_curve(abf_list, combinations_abs, amf_list, combinations_amf, a
         labels_amf.append("".join(map(str, combinations_amf[idx])))
 
     plt.legend(labels_amf)
-    plt.title("Median Fitness")
+    plt.title("Median Fitness for "+metric)
     plt.xlabel("Generation")
     plt.ylabel("Fitness")
 
@@ -150,7 +147,7 @@ def plot_fitness_curve(abf_list, combinations_abs, amf_list, combinations_amf, a
         labels_asr.append("".join(map(str, combinations_asr[idx])))
 
     plt.legend(labels_asr)
-    plt.title("Success Rates")
+    plt.title("Success Rates for "+metric)
     plt.xlabel("Generation")
     plt.ylabel("Success Rate")
 
@@ -170,7 +167,7 @@ def get_top_5(algorithm_ABF, combinations):
     return abfs_top_5, combinations_top_5
 
 
-def statistical_mode(runs=30, search=0, top_n=5):
+def statistical_mode(runs=30, search=0, top_n=5,  metric="radial"):
     # Perform grid search if search is zero
     if search == 0:
         values = [0, 1, 2]
@@ -182,11 +179,11 @@ def statistical_mode(runs=30, search=0, top_n=5):
     algorithm_success_rates = []
 
     c = 0
-    while c < len(combinations):
+    while c < 2:# len(combinations):
         best_fitness_of_run = []
 
         for _ in range(runs):
-            best_agent = Base(combinations[c][0], combinations[c][1], combinations[c][2])
+            best_agent = Base(combinations[c][0], combinations[c][1], combinations[c][2], metric)
             best_fitness_of_run.append((best_agent[1]))
 
         ABF = []
@@ -205,7 +202,6 @@ def statistical_mode(runs=30, search=0, top_n=5):
         algorithm_ABF.append(ABF)
         algorithm_median_fitness.append(median_fitness)
         algorithm_success_rates.append(success_rates)
-
         print(c)
         c += 1
 
@@ -215,8 +211,8 @@ def statistical_mode(runs=30, search=0, top_n=5):
     asr_top_5, combinations_asr_top_5 = get_top_5(algorithm_success_rates, combinations)
 
     plot_fitness_curve(abs_top_5, combinations_abs_top_5, amf_top_5, combinations_amf_top_5, asr_top_5,
-                       combinations_asr_top_5)
+                       combinations_asr_top_5, metric)
 
 
 if __name__ == "__main__":
-    statistical_mode()
+    statistical_mode(metric="manhattan")
