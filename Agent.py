@@ -58,8 +58,10 @@ class Agent:
         row, col = state[0] // 4, state[0] % 4
         return self.policy_matrix[row, col]
 
-    def set_fitness(self, fitness_value):
-        self.fitness_value = fitness_value
+    def set_fitness(self, fitness_value_manhattan, fitness_value_radial, fitness_value_euclidean):
+        self.fitness_value_manhattan = fitness_value_manhattan
+        self.fitness_value_radial = fitness_value_radial
+        self.fitness_value_euclidean = fitness_value_euclidean
 
     def get_fitness(self, state, metric):
         if metric == 'manhattan':
