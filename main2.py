@@ -37,18 +37,22 @@ class GeneticAlgorithm:
         self.population = agent_population
 
     def evaluate_fitness(self, agent):
-        state = self.env.reset()
-        steps = 0
-        done = False
-        while not done and steps < 100:
-            action = agent.choose_action(state)
-            new_state = self.env.step(action)
-            done = new_state[2]
-            state = new_state
-            steps += 1
+    state = self.env.reset()
+    steps = 0
+    done = False
+    while not done and steps < 100:
+        action = agent.choose_action(state)
+        new_state = self.env.step(action)
+        done = new_state[2]
+        state = new_state
+        steps += 1
 
-        fitness_value = agent.get_fitness(state)
-        agent.set_fitness(fitness_value)
+    fitness_value_manhattan = agent.get_fitness(state, 'manhattan')
+    fitness_value_radial = agent.get_fitness(state, 'radial')
+    fitness_value_euclidean = agent.get_fitness(state, 'euclidean')
+
+    agent.set_fitness(fitness_value_manhattan, fitness_value_radial, fitness_value_euclidean)
+
 
     def run(self, selection = 0, crossover = 0, mutation = 0):
         if mutation == MutationEnum.SWAP or mutation == MutationEnum.SCRAMBLE:
