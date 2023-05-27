@@ -179,7 +179,7 @@ def statistical_mode(runs=30, search=0, top_n=5,  metric="radial"):
     algorithm_success_rates = []
 
     c = 0
-    while c < 2:# len(combinations):
+    while c < len(combinations):
         best_fitness_of_run = []
 
         for _ in range(runs):
