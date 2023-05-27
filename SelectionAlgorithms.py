@@ -16,7 +16,7 @@ import random
 #    return selected_population
 
 # Tournment Selection Algorithm
-def tournament_algorithm(population, elite_percent=0.1):
+def tournament_algorithm(population, elite_percent=0.2):
     # Calculate total fitness and create a list of fitness values
     fitness_sum = 0
     fitness_list = []
@@ -49,7 +49,7 @@ def tournament_algorithm(population, elite_percent=0.1):
 
 
 # Ranking Selection Algorithm
-def ranking_selection(population, elite_percent=0.1):
+def ranking_selection(population, elite_percent=0.2):
     fitness_sum = 0
     fitness_list = []
     for i in population:
@@ -82,7 +82,7 @@ def ranking_selection(population, elite_percent=0.1):
     return selected_individuals
 
 
-def roulette_wheel_selection(population, elite_percent=0.1):
+def roulette_wheel_selection(population, elite_percent=0.2):
     fitness_sum = 0
     fitness_list = []
     for i in population:

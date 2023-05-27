@@ -11,7 +11,7 @@ class CrossoverEnum(IntEnum):
     DOUBLE_POINT = 2
 
 
-def apply_crossover(population, crossover_algorithm, crossover_rate=0.9):
+def apply_crossover(population, crossover_algorithm, crossover_rate=0.8):
     crossover_population = []
 
     if crossover_algorithm == CrossoverEnum.SINGLE_POINT:
@@ -24,7 +24,7 @@ def apply_crossover(population, crossover_algorithm, crossover_rate=0.9):
     return crossover_population
 
 
-def Single_point(population, crossover_rate=0.9):
+def Single_point(population, crossover_rate=0.8):
     crossover_population = []
 
     parent_indexadd = []
@@ -74,7 +74,7 @@ def Single_point(population, crossover_rate=0.9):
     return crossover_population
 
 
-def Alternated_mosaic(population, crossover_rate=0.9):
+def Alternated_mosaic(population, crossover_rate=0.8):
     crossover_population = []
 
     parent_indexadd = []
@@ -134,7 +134,7 @@ def Alternated_mosaic(population, crossover_rate=0.9):
     return crossover_population
 
 
-def Double_point(population, crossover_rate=0.9):
+def Double_point(population, crossover_rate=0.8):
     crossover_population = []
 
     parent_indexadd = []

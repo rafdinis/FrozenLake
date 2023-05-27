@@ -178,6 +178,7 @@ def statistical_mode(runs=30, search=0, top_n=5,  metric="radial"):
     algorithm_median_fitness = []
     algorithm_success_rates = []
 
+
     c = 0
     while c < len(combinations):
         best_fitness_of_run = []
@@ -209,9 +210,17 @@ def statistical_mode(runs=30, search=0, top_n=5,  metric="radial"):
     amf_top_5, combinations_amf_top_5 = get_top_5(algorithm_median_fitness, combinations)
     asr_top_5, combinations_asr_top_5 = get_top_5(algorithm_success_rates, combinations)
 
+    results = []
+
+    # Top 5 results
+    for i, combination in enumerate(combinations_abs_top_5):
+        results.append((combination, abs_top_5[i][-1], amf_top_5[i][-1], asr_top_5[i][-1]))
+
+    for result in results:
+        print(result)
+
     plot_fitness_curve(abs_top_5, combinations_abs_top_5, amf_top_5, combinations_amf_top_5, asr_top_5,
                        combinations_asr_top_5, metric)
 
-
 if __name__ == "__main__":
-    statistical_mode(metric="manhattan")
+    statistical_mode(metric="euclidean")
