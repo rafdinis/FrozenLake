@@ -11,10 +11,15 @@ class MutationEnum(IntEnum):
 
 def mutate_population(population, mutation_type):
     mutated_population = []
+    mutation_rate = 0.1
 
     for agent in population:
         # Copy the policy matrix
         policy = agent.policy_matrix.copy()
+
+        if np.random.random() > mutation_rate:
+            mutated_population.append(agent)
+            continue
 
         if mutation_type == MutationEnum.RANDOM_RESETTING:
             mutated_population.append(random_resetting(policy))

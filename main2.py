@@ -202,9 +202,7 @@ def statistical_mode(runs=30, search=0, top_n=5,  metric="radial"):
         algorithm_ABF.append(ABF)
         algorithm_median_fitness.append(median_fitness)
         algorithm_success_rates.append(success_rates)
-        print(c)
         c += 1
-
 
     abs_top_5, combinations_abs_top_5 = get_top_5(algorithm_ABF, combinations)
     amf_top_5, combinations_amf_top_5 = get_top_5(algorithm_median_fitness, combinations)
