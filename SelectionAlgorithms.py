@@ -82,31 +82,31 @@ def ranking_selection(population, elite_percent=0.1):
     return selected_individuals
 
 
-def roulette_wheel_selection(population):
+def roulette_wheel_selection(population, elite_percent=0.1):
     fitness_sum = 0
     fitness_list = []
-
     for i in population:
         fitness_sum += i.fitness
         fitness_list.append(i.fitness)
-
     total_fitness = fitness_sum
     probabilities = [score / total_fitness for score in fitness_list]
-
     # Create a cumulative probability distribution
-    cumulative_probabilities = [sum(probabilities[:i + 1]) for i in range(len(probabilities))]
-
-    selected = []
-    for _ in range(len(population)):
+    cumulative_probabilities = [sum(probabilities[:i+1]) for i in range(len(probabilities))]
+    # Calculate the number of elite individuals to select
+    elite_count = int(len(population) * elite_percent)
+    # Sort the population by fitness in descending order
+    sorted_population = sorted(population, key=lambda individual: individual.fitness, reverse=True)
+    # Initialize the selected individuals list with elite individuals
+    selected = sorted_population[:elite_count]
+    # Select the remaining individuals using roulette wheel selection
+    for _ in range(elite_count, len(population)):
         # Spin the roulette wheel
         spin = random.uniform(0, 1)
-
         # Find the selected individual based on the spin
         for i, individual in enumerate(population):
             if spin <= cumulative_probabilities[i]:
                 selected.append(individual)
                 break
-
     return selected
 
 

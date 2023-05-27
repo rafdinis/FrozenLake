@@ -11,7 +11,7 @@ class MutationEnum(IntEnum):
 
 def mutate_population(population, mutation_type):
     mutated_population = []
-    mutation_rate = 0.1
+    mutation_rate = 0.2
 
     for agent in population:
         # Copy the policy matrix

@@ -96,7 +96,7 @@ class GeneticAlgorithm:
 
 def Base(selection=0, crossover=0, mutation=0, metric="manhattan"):
     env = Environment("FrozenLake-v1", is_slippery=False)
-    ga = GeneticAlgorithm(env, population_size=10, generations=100)
+    ga = GeneticAlgorithm(env, population_size=10, generations=500)
     best_agent = ga.run(selection, crossover, mutation, metric)
 
     state = env.reset()
@@ -203,6 +203,7 @@ def statistical_mode(runs=30, search=0, top_n=5,  metric="radial"):
         algorithm_median_fitness.append(median_fitness)
         algorithm_success_rates.append(success_rates)
         c += 1
+        print(c)
 
     abs_top_5, combinations_abs_top_5 = get_top_5(algorithm_ABF, combinations)
     amf_top_5, combinations_amf_top_5 = get_top_5(algorithm_median_fitness, combinations)
