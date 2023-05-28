@@ -169,7 +169,7 @@ def get_top_5(algorithm_ABF, combinations):
 
 def statistical_mode(runs=30, search=0, top_n=5,  metric="radial"):
     # Perform grid search if search is zero
-    combinations = [(2,0,1)]
+    combinations = [(2,0,2)]
 
     algorithm_ABF = []
     algorithm_median_fitness = []
