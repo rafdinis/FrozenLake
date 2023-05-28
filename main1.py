@@ -167,7 +167,7 @@ def get_top_5(algorithm_ABF, combinations):
     return abfs_top_5, combinations_top_5
 
 
-def statistical_mode(runs=30, search=0, top_n=5,  metric="radial"):
+def statistical_mode(runs=100, search=0, top_n=5,  metric="radial"):
     # Perform grid search if search is zero
     combinations = [(2,0,2)]
 
