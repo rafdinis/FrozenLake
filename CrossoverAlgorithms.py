@@ -74,7 +74,7 @@ def Single_point(population, crossover_rate=0.8):
     return crossover_population
 
 
-def Alternated_mosaic(population, crossover_rate=0.8):
+def Mosaic(population, crossover_rate=0.8):
     crossover_population = []
 
     parent_indexadd = []

@@ -71,7 +71,7 @@ class GeneticAlgorithm:
             if crossover == 0:
                 self.population = Single_point(self.population)
             if crossover == 1:
-                self.population = Alternated_mosaic(self.population)
+                self.population = Mosaic(self.population)
             if crossover == 2:
                 self.population = Double_point(self.population)
 
