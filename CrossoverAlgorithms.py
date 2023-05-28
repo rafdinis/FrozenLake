@@ -7,7 +7,7 @@ from enum import IntEnum
 
 class CrossoverEnum(IntEnum):
     SINGLE_POINT = 0
-    ALTERNATED_MOSAIC = 1
+    UNIFORM = 1
     DOUBLE_POINT = 2
 
 
@@ -16,8 +16,8 @@ def apply_crossover(population, crossover_algorithm, crossover_rate=0.8):
 
     if crossover_algorithm == CrossoverEnum.SINGLE_POINT:
         crossover_population = Single_point(population, crossover_rate)
-    if crossover_algorithm == CrossoverEnum.ALTERNATED_MOSAIC:
-        crossover_population = Alternated_mosaic(population, crossover_rate)
+    if crossover_algorithm == CrossoverEnum.UNIFORM:
+        crossover_population = Uniform(population, crossover_rate)
     if crossover_algorithm == CrossoverEnum.DOUBLE_POINT:
         crossover_population = Double_point(population, crossover_rate)
 
@@ -74,7 +74,7 @@ def Single_point(population, crossover_rate=0.8):
     return crossover_population
 
 
-def Mosaic(population, crossover_rate=0.8):
+def Uniform(population, crossover_rate=0.8):
     crossover_population = []
 
     parent_indexadd = []
@@ -116,6 +116,8 @@ def Mosaic(population, crossover_rate=0.8):
             flat_offspring2 = np.empty_like(flat_p2p)
 
             # Iterate over each element of the policy
+            # if the crossover_rate is different from 0.5, then there is a parent asymmetry in genetic contribution
+
             for i in range(len(flat_p1p)):
                 if random.random() < crossover_rate:
                     flat_offspring1[i] = flat_p1p[i]
