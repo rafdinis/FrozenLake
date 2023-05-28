@@ -223,4 +223,5 @@ def statistical_mode(runs=100, search=0, top_n=5,  metric="radial"):
                        combinations_asr_top_5, metric)
 
 if __name__ == "__main__":
+    #Change metric to "radial" or "manhattan" to use difference distance fitnesses
     statistical_mode(metric="euclidean")
