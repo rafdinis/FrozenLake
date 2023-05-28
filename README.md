@@ -10,6 +10,7 @@ The agent moves are:
 - Down: 1
 - Right: 2
 - Up: 3
+
 We define a population of these different agents that have an internal representation of the map (a policy_matrix)
 We then run combinations of selection, crossover, and mutation algorithms (3 of each) over different generations to observe which are the highest performers.
 
