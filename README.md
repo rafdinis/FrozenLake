@@ -6,10 +6,10 @@ Genetic Algorithm implementation of solutions for the FrozenLake problem, provid
 
 This problem consists of an agent in a grid maze and trying to reach the goal without falling into a hole. 
 The agent moves are:
-- Down: 0
-- Right: 1
-- Up: 2
-- Left: 3
+- Left: 0
+- Down: 1
+- Right: 2
+- Up: 3
 We define a population of these different agents that have an internal representation of the map (a policy_matrix)
 We then run combinations of selection, crossover, and mutation algorithms (3 of each) over different generations to observe which are the highest performers.
 
